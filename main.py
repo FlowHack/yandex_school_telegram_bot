@@ -23,6 +23,8 @@ HEADERS_FOR_YANDEX = {
 
 def parse_homework_status(homework):
     homework_name = homework['homework_name']
+    if homework['status'] == 'reviewing':
+        return f'У вас начали проверять работу "{homework_name}"!'
     if homework['status'] == 'rejected':
         verdict = 'К сожалению в работе нашлись ошибки.'
     else:
