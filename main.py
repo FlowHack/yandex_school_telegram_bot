@@ -32,7 +32,7 @@ def parse_homework_status(homework):
 
 def get_homework_statuses(current_timestamp):
     form_date_for_homework_get = {
-        'from_date': 0
+        'from_date': current_timestamp
     }
     homework_statuses = requests.get(
         URL_GET_HOMEWORK,
