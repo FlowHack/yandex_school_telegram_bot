@@ -87,7 +87,7 @@ def main():
                 )
                 logging.info(f'Удачно отправил сообщение\n\n{message}')
             current_timestamp = new_homework.get('current_date', current_timestamp)
-            time.sleep(300)
+            time.sleep(60)
 
         except Exception as e:
             logging.error(f'Бот столкнулся с ошибкой: {e}')
