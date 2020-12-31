@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 logging.basicConfig(
     level=logging.INFO,
-    filename='main.log', filemode='a',
+    filename='main.log', filemode='w',
     format='-'*50 + '\n!%(levelname)s!: %(asctime)s: %(message)s\n' + '-'*50
 )
 
@@ -25,20 +25,29 @@ HEADERS_FOR_YANDEX = {
 def parse_homework_status(homework):
     homework_name = homework.get('homework_name')
     status = homework.get('status')
-    if status == 'reviewing':
-        return f'У вас начали проверять работу "{homework_name}"!'
-    elif status == 'rejected':
-        verdict = 'К сожалению в работе нашлись ошибки.'
-    elif status == 'approved':
-        verdict = 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
-    else:
-        return 'Пришёл неверный статус ответа от Яндекс Практикума'
+    verdicts = {
+        'reviewing': f'У вас начали проверять работу "{homework_name}"!',
+        'rejected': 'К сожалению в работе нашлись ошибки.',
+        'approved': 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
+    }
+    errors = {
+        'status': 'Пришёл неверный статус ответа от Яндекс Практикума',
+        'homework_name': 'Пришло неверное имя домашки от Яндекс Практикума'
+    }
 
-    return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
+    if status not in verdicts.keys():
+        logging.error(errors['status'])
+        return errors['status']
+    if homework_name is None:
+        logging.error(errors['homework_name'])
+        return errors['homework_name']
+    # pytest не позволяет разгуляться и сделать красивый вывод для всех случаев статуса
+    verdict = verdicts[status]
+    return f'Статус проверк  работы "{homework_name}"!\n\n{verdict}'
 
 
 def get_homework_statuses(current_timestamp):
-    current_timestamp = int(time.time()) if current_timestamp is None else current_timestamp
+    current_timestamp = (current_timestamp, int(time.time()))[current_timestamp is None]
     form_date_for_homework_get = {
         'from_date': current_timestamp
     }
@@ -78,7 +87,7 @@ def main():
                 )
                 logging.info(f'Удачно отправил сообщение\n\n{message}')
             current_timestamp = new_homework.get('current_date', current_timestamp)
-            time.sleep(60)
+            time.sleep(300)
 
         except Exception as e:
             logging.error(f'Бот столкнулся с ошибкой: {e}')
