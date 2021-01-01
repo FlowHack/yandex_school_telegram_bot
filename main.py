@@ -10,7 +10,7 @@ load_dotenv()
 logging.basicConfig(
     level=logging.INFO,
     filename='main.log', filemode='w',
-    format='-'*50 + '\n!%(levelname)s!: %(asctime)s: %(message)s\n' + '-'*50
+    format='%(levelname)s: %(asctime)s: %(message)s'
 )
 
 PRAKTIKUM_TOKEN = os.getenv('PRAKTIKUM_TOKEN')
@@ -43,11 +43,11 @@ def parse_homework_status(homework):
         return errors['homework_name']
     # pytest не позволяет разгуляться и сделать красивый вывод для всех случаев статуса
     verdict = verdicts[status]
-    return f'Статус проверк  работы "{homework_name}"!\n\n{verdict}'
+    return f'Статус проверки  работы: "{homework_name}"!\n\n{verdict}'
 
 
 def get_homework_statuses(current_timestamp):
-    current_timestamp = (current_timestamp, int(time.time()))[current_timestamp is None]
+    current_timestamp = current_timestamp or int(time.time())
     form_date_for_homework_get = {
         'from_date': current_timestamp
     }
