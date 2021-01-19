@@ -26,9 +26,9 @@ def parse_homework_status(homework):
     homework_name = homework.get('homework_name')
     status = homework.get('status')
     verdicts = {
-        'reviewing': f'У вас начали проверять работу "{homework_name}"!',
-        'rejected': 'К сожалению в работе нашлись ошибки.',
-        'approved': 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
+        'reviewing': f'У вас начали проверять работу!',
+        'rejected': 'К сожалению в работе нашлись ошибки =(',
+        'approved': 'Ревью пройдено!'
     }
     errors = {
         'status': 'Пришёл неверный статус ответа от Яндекс Практикума',
@@ -37,12 +37,22 @@ def parse_homework_status(homework):
 
     if status not in verdicts.keys():
         logging.error(errors['status'])
+
         return errors['status']
     if homework_name is None:
         logging.error(errors['homework_name'])
+
         return errors['homework_name']
-    # pytest не позволяет разгуляться и сделать красивый вывод для всех случаев статуса
+
     verdict = verdicts[status]
+    if (status == 'rejected') or (status == 'approved'):
+        comment = homework.get('reviewer_comment')
+        comment = ''
+        if comment:
+            verdict += f'\n\nКомментарий: {comment}'
+        else:
+            verdict += '\n\nБез комментариев.'
+
     return f'Статус проверки  работы: "{homework_name}"!\n\n{verdict}'
 
 
