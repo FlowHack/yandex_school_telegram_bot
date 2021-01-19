@@ -84,9 +84,13 @@ def send_message(message, bot_client):
 
 def main():
     current_timestamp = int(time.time())
+    start = 0
     while True:
         try:
             bot_client_telegram = telegram.Bot(token=TELEGRAM_TOKEN)
+            if start == 0:
+                send_message('Я запустился!', bot_client_telegram)
+                start = 1
             new_homework = get_homework_statuses(current_timestamp)
             if new_homework.get('homeworks'):
                 message = parse_homework_status(new_homework.get('homeworks')[0])
