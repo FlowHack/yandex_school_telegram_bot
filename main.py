@@ -47,7 +47,6 @@ def parse_homework_status(homework):
     verdict = verdicts[status]
     if (status == 'rejected') or (status == 'approved'):
         comment = homework.get('reviewer_comment')
-        comment = ''
         if comment:
             verdict += f'\n\nКомментарий: {comment}'
         else:
